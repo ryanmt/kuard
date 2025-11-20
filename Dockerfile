@@ -1,16 +1,17 @@
 # STAGE 1: Build
-FROM golang:1.12-alpine AS build
+FROM golang:1.25-alpine AS build
 
 # Install Node and NPM.
 RUN apk update && apk upgrade && apk add --no-cache git nodejs bash npm
 
-# Get dependencies for Go part of build
-RUN go get -u github.com/jteeuwen/go-bindata/...
-
 WORKDIR /go/src/github.com/kubernetes-up-and-running/kuard
-
 # Copy all sources in
 COPY . .
+
+
+# Get dependencies for Go part of build
+RUN go get
+
 
 # This is a set of variables that the build script expects
 ENV VERBOSE=0

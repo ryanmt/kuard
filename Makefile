@@ -32,7 +32,7 @@ MAKEFLAGS += --no-builtin-rules
 PKG := github.com/kubernetes-up-and-running/kuard
 
 # Registry to push to.
-REGISTRY ?= gcr.io/kuar-demo
+REGISTRY ?= ryanmt
 
 # For demo purposes, we want to build multiple versions.  They will all be
 # mostly the same but will let us demonstrate rollouts.
@@ -174,7 +174,7 @@ $(BIN_DOCKERFILE): Dockerfile.kuard
 			$< > $@
 
 
-CONTAINER_NAME  := $(REGISTRY)/kuard-$(ARCH)
+CONTAINER_NAME  := $(REGISTRY)/kuard
 BUILDSTAMP_NAME := $(subst /,_,$(CONTAINER_NAME)-$(FAKEVER))
 
 .$(BUILDSTAMP_NAME)-image: $(BIN_DOCKERFILE) $(BINARYPATH)
@@ -207,6 +207,14 @@ push: $(PUSH_BUILDSTAMP)
 	@echo "pushing image: " $$(sed -n '2p' $<)
 	docker push $$(sed -n '2p' $<) $(VERBOSE_OUTPUT)
 	cat $< > $@
+
+
+# Multi-architecture images are better.
+# ALL_ARCH := amd64 arm arm64 ppc64le ?
+# docker buildx build --platform linux/amd64,linux/arm64,linux/ppc64le -t ryanmt/kuard:blue .
+build-multiarch:
+	docker buildx build --platform linux/amd64,linux/arm64 -t ryanmt/kuard:blue .
+
 
 ##############################################################################
 # Rules for dealing with fake versions

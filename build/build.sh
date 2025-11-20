@@ -54,4 +54,5 @@ go install                                                         \
     ${GO_FLAGS}                                                    \
     -installsuffix "static"                                        \
     -ldflags "-X ${PKG}/pkg/version.VERSION=${VERSION}"            \
+
     ./cmd/...
